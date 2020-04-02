@@ -175,21 +175,21 @@ function calcElo($meanEloA,$meanEloB,$winner,$winnerTeam,$playerElo) {
     if($winner == "y") {
         if($winnerTeam == "a") {
             $Ea = 1 / (1+pow(10,(($meanEloB - $meanEloA) / 400)));
-            $playerElo = $playerElo + 32*(1-$Ea);
+            $playerElo = $playerElo + 16*(1-$Ea);
         }
         if($winnerTeam == "b") {
             $Eb = 1 / (1+pow(10,(($meanEloA - $meanEloB) / 400)));
-            $playerElo = $playerElo + 32*(1-$Eb);
+            $playerElo = $playerElo + 16*(1-$Eb);
         }
 
     }else if($winner == "n") {
         if($winnerTeam == "a") {
-            $Ea = (1 / 1+pow(10,(($meanEloB - $meanEloA) / 400)));
-            $playerElo = $playerElo + 32*(0-$Ea);
+            $Ea = 1 / (1+pow(10,(($meanEloB - $meanEloA) / 400)));
+            $playerElo = $playerElo + 16*(0-$Ea);
         }
         if($winnerTeam == "b") {
-            $Eb = (1 / 1+pow(10,(($meanEloA - $meanEloB) / 400)));
-            $playerElo = $playerElo + 32*(0-$Eb);
+            $Eb = 1 / (1+pow(10,(($meanEloA - $meanEloB) / 400)));
+            $playerElo = $playerElo + 16*(0-$Eb);
         }
     }
     return  round($playerElo);
