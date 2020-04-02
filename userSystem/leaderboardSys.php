@@ -160,6 +160,7 @@ function ranking($teamA, $teamB, $winner){
             for ($row = 2; $row <= $lastRow; $row++) {
                 if($gamer == $worksheet->getCell('A'.$row)->getValue()) {
                     $worksheet->setCellValueByColumnAndRow(1,$row,calcElo($meanEloA,$meanEloB,"y","a",$worksheet->getCell('B'.$row)->getValue()));
+                    $worksheet->setCellValueByColumnAndRow(3,$row,$worksheet->getCell('D'.$row)->getValue()+1);
                 }
             }
         }
@@ -167,6 +168,7 @@ function ranking($teamA, $teamB, $winner){
             for ($row = 2; $row <= $lastRow; $row++) {
                 if($gamer == $worksheet->getCell('A'.$row)->getValue()) {
                     $worksheet->setCellValueByColumnAndRow(1,$row,calcElo($meanEloA,$meanEloB,"n","b",$worksheet->getCell('B'.$row)->getValue()));
+                    $worksheet->setCellValueByColumnAndRow(4,$row,$worksheet->getCell('E'.$row)->getValue()+1);
                 }
             }
         }
@@ -175,6 +177,7 @@ function ranking($teamA, $teamB, $winner){
             for ($row = 2; $row <= $lastRow; $row++) {
                 if($gamer == $worksheet->getCell('A'.$row)->getValue()) {
                     $worksheet->setCellValueByColumnAndRow(1,$row,calcElo($meanEloA,$meanEloB,"n","a",$worksheet->getCell('B'.$row)->getValue()));
+                    $worksheet->setCellValueByColumnAndRow(4,$row,$worksheet->getCell('E'.$row)->getValue()+1);
                 }
             }
         }
@@ -182,6 +185,7 @@ function ranking($teamA, $teamB, $winner){
             for ($row = 2; $row <= $lastRow; $row++) {
                 if($gamer == $worksheet->getCell('A'.$row)->getValue()) {
                     $worksheet->setCellValueByColumnAndRow(1,$row,calcElo($meanEloA,$meanEloB,"y","b",$worksheet->getCell('B'.$row)->getValue()));
+                    $worksheet->setCellValueByColumnAndRow(3,$row,$worksheet->getCell('D'.$row)->getValue()+1);
                 }
             }
         }
