@@ -30,6 +30,8 @@ if (isset($_POST['submitStats'])) {
     }else if($_POST['statsTeamA'] < $_POST['statsTeamB']){
         ranking($_SESSION['teams'][0],$_SESSION['teams'][1],"b");
         header("Refresh:0; url=../index.php");
+    }else{
+        header("Refresh:0; url=../index.php");
     }
     refreshLeaderboard();
 }
@@ -82,8 +84,8 @@ function getMatchHistory() {
         "teamB"=>$worksheet->getCell('D'.$row)->getValue(), "date"=>date('d.m.y H:i:s', $worksheet->getCell('E'.$row)->getValue()));  
         $matchHistory[] = $match;
     }
-    $_SESSION['matchHistory'] = $matchHistory;
-    return $matchHistory;
+    $_SESSION['matchHistory'] = array_reverse($matchHistory);
+    return array_reverse($matchHistory);
 }
 
 if (isset($_POST['addGamer'])) {
