@@ -94,21 +94,39 @@ if (isset($_POST['addGamer'])) {
     $excelObj = $excelReader->load($loginDataFile);
     $worksheet = $excelObj->getSheet(0);
     $lastRow = $worksheet->getHighestRow();
+    $gamerExists = false;
     if(isset($_POST['newGamer'])) {
         for ($row = 2; $row <= $lastRow; $row++) {
-            if($_POST['newGamer'] != $worksheet->getCell('A'.$row)->getValue()) {
-                $worksheet->setCellValueByColumnAndRow(0,$lastRow+1,$_POST['newGamer']);
-                $worksheet->setCellValueByColumnAndRow(1,$lastRow+1,0);
-                $worksheet->setCellValueByColumnAndRow(2,$lastRow+1,0);
-                $objWriter = PHPExcel_IOFactory::createWriter($excelObj, 'Excel2007');
-                $objWriter->save('leaderboard.xlsx');
-                header("Location: ../index.php?addGamer=success");
+            if($_POST['newGamer'] == $worksheet->getCell('A'.$row)->getValue()) {
+                $gamerExists = true;
             } 
+        }
+        if(!$gamerExists) {
+            $worksheet->setCellValueByColumnAndRow(0,$lastRow+1,$_POST['newGamer']);
+            $worksheet->setCellValueByColumnAndRow(1,$lastRow+1,1000);
+            $worksheet->setCellValueByColumnAndRow(2,$lastRow+1,0);
+            $objWriter = PHPExcel_IOFactory::createWriter($excelObj, 'Excel2007');
+            $objWriter->save('leaderboard.xlsx');
+            addUser($_POST['newGamer'],$_POST['newGamer']);
+            header("Location: ../index.php?addGamer=success");
         }
     }else {
         header("Location: ../index.php?addGamer=failed");
     }
     refreshLeaderboard();
+}
+
+function addUser($username, $password){
+    $loginDataFile = 'loginDaten.xlsx';
+    $excelReader = PHPExcel_IOFactory::createReaderForFile($loginDataFile);
+    $excelObj = $excelReader->load($loginDataFile);
+    $worksheet = $excelObj->getSheet(0);
+    $lastRow = $worksheet->getHighestRow();
+    $worksheet->setCellValueByColumnAndRow(0,$lastRow+1,$username);
+    $worksheet->setCellValueByColumnAndRow(1,$lastRow+1,$username);
+    $worksheet->setCellValueByColumnAndRow(2,$lastRow+1,$password);
+    $objWriter = PHPExcel_IOFactory::createWriter($excelObj, 'Excel2007');
+    $objWriter->save('loginDaten.xlsx');
 }
 
 function ranking($teamA, $teamB, $winner){
