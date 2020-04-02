@@ -25,14 +25,10 @@ function refreshLeaderboard() {
 if (isset($_POST['submitStats'])) {
     saveMatchToHistory($_SESSION['teams'][0],$_SESSION['teams'][1],$_POST['statsTeamA'], $_POST['statsTeamB']);
     if($_POST['statsTeamA'] > $_POST['statsTeamB']) {
-        ranking($_SESSION['teams'][0],true);
+        ranking($_SESSION['teams'][0],$_SESSION['teams'][1],"a");
         header("Refresh:0; url=../index.php");
     }else if($_POST['statsTeamA'] < $_POST['statsTeamB']){
-        ranking($_SESSION['teams'][1],true);
-        header("Refresh:0; url=../index.php");
-    }else {
-        ranking($_SESSION['teams'][0],false);
-        ranking($_SESSION['teams'][1],false);
+        ranking($_SESSION['teams'][0],$_SESSION['teams'][1],"b");
         header("Refresh:0; url=../index.php");
     }
     refreshLeaderboard();
@@ -113,26 +109,90 @@ if (isset($_POST['addGamer'])) {
     refreshLeaderboard();
 }
 
-function ranking($team, $winner){
+function ranking($teamA, $teamB, $winner){
     $loginDataFile = 'leaderboard.xlsx';
     $excelReader = PHPExcel_IOFactory::createReaderForFile($loginDataFile);
     $excelObj = $excelReader->load($loginDataFile);
     $worksheet = $excelObj->getSheet(0);
     $lastRow = $worksheet->getHighestRow();
-    $winElo = 3;
-    if(!$winner) {
-        $winElo = 1;
-    }
-    foreach($team as &$gamer) {
+    $meanEloA = 0;
+    $meanEloB = 0;
+
+    foreach($teamA as &$gamer) {
         for ($row = 2; $row <= $lastRow; $row++) {
             if($gamer == $worksheet->getCell('A'.$row)->getValue()) {
-                 $worksheet->setCellValueByColumnAndRow(1,$row,$worksheet->getCell('B'.$row)->getValue()+$winElo);
-                 //  echo "<pre>"; var_dump($worksheet->getCell('B'.$row)->getValue()); echo "</pre>";
+                $meanEloA += $worksheet->getCell('B'.$row)->getValue();
             }
         }
     }
+    $meanEloA = $meanEloA / sizeof($teamA);
+    foreach($teamB as &$gamer) {
+        for ($row = 2; $row <= $lastRow; $row++) {
+            if($gamer == $worksheet->getCell('A'.$row)->getValue()) {
+                $meanEloB += $worksheet->getCell('B'.$row)->getValue();
+            }
+        }
+    }
+    $meanEloB = $meanEloB / sizeof($teamB);
+
+    if($winner == "a") {
+        foreach($teamA as &$gamer) {
+            for ($row = 2; $row <= $lastRow; $row++) {
+                if($gamer == $worksheet->getCell('A'.$row)->getValue()) {
+                    $worksheet->setCellValueByColumnAndRow(1,$row,calcElo($meanEloA,$meanEloB,"y","a",$worksheet->getCell('B'.$row)->getValue()));
+                }
+            }
+        }
+        foreach($teamB as &$gamer) {
+            for ($row = 2; $row <= $lastRow; $row++) {
+                if($gamer == $worksheet->getCell('A'.$row)->getValue()) {
+                    $worksheet->setCellValueByColumnAndRow(1,$row,calcElo($meanEloA,$meanEloB,"n","b",$worksheet->getCell('B'.$row)->getValue()));
+                }
+            }
+        }
+    }else if($winner == "b") {
+        foreach($teamA as &$gamer) {
+            for ($row = 2; $row <= $lastRow; $row++) {
+                if($gamer == $worksheet->getCell('A'.$row)->getValue()) {
+                    $worksheet->setCellValueByColumnAndRow(1,$row,calcElo($meanEloA,$meanEloB,"n","a",$worksheet->getCell('B'.$row)->getValue()));
+                }
+            }
+        }
+        foreach($teamB as &$gamer) {
+            for ($row = 2; $row <= $lastRow; $row++) {
+                if($gamer == $worksheet->getCell('A'.$row)->getValue()) {
+                    $worksheet->setCellValueByColumnAndRow(1,$row,calcElo($meanEloA,$meanEloB,"y","b",$worksheet->getCell('B'.$row)->getValue()));
+                }
+            }
+        }
+    }                  
     $objWriter = PHPExcel_IOFactory::createWriter($excelObj, 'Excel2007');
     $objWriter->save('leaderboard.xlsx');
+}
+
+function calcElo($meanEloA,$meanEloB,$winner,$winnerTeam,$playerElo) {
+
+    if($winner == "y") {
+        if($winnerTeam == "a") {
+            $Ea = 1 / (1+pow(10,(($meanEloB - $meanEloA) / 400)));
+            $playerElo = $playerElo + 32*(1-$Ea);
+        }
+        if($winnerTeam == "b") {
+            $Eb = 1 / (1+pow(10,(($meanEloA - $meanEloB) / 400)));
+            $playerElo = $playerElo + 32*(1-$Eb);
+        }
+
+    }else if($winner == "n") {
+        if($winnerTeam == "a") {
+            $Ea = (1 / 1+pow(10,(($meanEloB - $meanEloA) / 400)));
+            $playerElo = $playerElo + 32*(0-$Ea);
+        }
+        if($winnerTeam == "b") {
+            $Eb = (1 / 1+pow(10,(($meanEloA - $meanEloB) / 400)));
+            $playerElo = $playerElo + 32*(0-$Eb);
+        }
+    }
+    return  round($playerElo);
 }
 
 
