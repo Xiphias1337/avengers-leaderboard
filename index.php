@@ -202,10 +202,10 @@ session_start();
                   <thead>
                       <tr>
                         <th><h3>Team A</h3> <div class="form-group has-default">
-                        <input type="text" name="statsTeamA" class="form-control" placeholder="Ergbniss">
+                        <input type="text" name="statsTeamA" class="form-control" placeholder="Ergebnis">
                       </div></th>
                         <th><h3>Team B</h3> <div class="form-group has-default">
-                        <input type="text" name="statsTeamB" class="form-control" placeholder="Ergbniss">
+                        <input type="text" name="statsTeamB" class="form-control" placeholder="Ergebnis">
                       </div></th>
                       </tr>
                     </thead>';
