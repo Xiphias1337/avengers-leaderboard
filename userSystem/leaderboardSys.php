@@ -4,25 +4,21 @@ include 'checkLogin.php';
 
 require_once dirname(__FILE__) . '/Classes/PHPExcel.php';
 
-
-
-if (isset($_POST['refreshLeaderboard'])) {
+function refreshPage() {
     refreshLeaderboard();
-    header("Refresh:0; url=../index.php");
-
-}
-
-if (isset($_POST['refreshMatchhistory'])) {
     getMatchHistory();
     header("Refresh:0; url=../index.php");
+}
 
+if (isset($_POST['refreshPage'])) {
+    refreshPage();
 }
 
 function refreshLeaderboard() {
     $_SESSION['allUsers'] = getSortedallUsers();
 }
 
-if (isset($_POST['submitStats'])) {
+if (isset($_POST['submitStats']) && is_numeric($_POST['statsTeamA']) && is_numeric($_POST['statsTeamB'])) {
     saveMatchToHistory($_SESSION['teams'][0],$_SESSION['teams'][1],$_POST['statsTeamA'], $_POST['statsTeamB']);
     if($_POST['statsTeamA'] > $_POST['statsTeamB']) {
         ranking($_SESSION['teams'][0],$_SESSION['teams'][1],"a");
@@ -48,16 +44,15 @@ function saveMatchToHistory($teamA, $teamB, $pointsA, $pointsB) {
     $lastElementB = end($teamB);
 
     foreach($teamA as $userA) {
-        if(!$lastElementA) {
-            $usersA .= $userA.",";
+        if($userA != $lastElementA) {
+            $usersA .= $userA.", ";
         }else{
             $usersA .= $userA;
         }
     }
     foreach($teamB as $userB) {
-        if(!$lastElementB) {
-            $usersB .= $userB.",";
-
+        if($userB != $lastElementB) {
+            $usersB .= $userB.", ";
         }else{
             $usersB .= $userB;
         }
@@ -88,7 +83,7 @@ function getMatchHistory() {
     return array_reverse($matchHistory);
 }
 
-if (isset($_POST['addGamer'])) {
+if (isset($_POST['addGamer']) && $_POST['addGamer'] != "") {
     $loginDataFile = 'leaderboard.xlsx';
     $excelReader = PHPExcel_IOFactory::createReaderForFile($loginDataFile);
     $excelObj = $excelReader->load($loginDataFile);

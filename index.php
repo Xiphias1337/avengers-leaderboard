@@ -19,6 +19,9 @@ session_start();
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
 </head>
 
+<script>    document.getElementById("refreshButton").click();
+</script>
+
 <body class="index-page sidebar-collapse">
 <!--   <nav class="navbar navbar-color-on-scroll navbar-transparent    fixed-top  navbar-expand-lg " color-on-scroll="100" id="sectionsNav">
     <div class="container">
@@ -114,6 +117,8 @@ session_start();
                         <th class="text-center">#</th>
                         <th>Gamer</th>
                         <th>Elo</th>
+                        <th>Wins</th>
+                        <th>Losses</th>
                       </tr>
                     </thead>
                     <tbody>';
@@ -121,14 +126,16 @@ session_start();
                       foreach($allUser as $user){
                       echo '<tr> <td class="text-center">'.$user["placement"].'</td>
                       <td>'.$user["username"].'</td>
-                      <td>'.$user["elo"].'</td> </tr>';
+                      <td>'.$user["elo"].'</td>
+                      <td>'.$user["wins"].'</td>
+                      <td>'.$user["losses"].'</td> </tr>';
                     }
                     }
                    echo '</tbody>
                   </table><form class="form" method="post" action="userSystem/leaderboardSys.php">
-                  <button type="submit" name="refreshLeaderboard" class="btn btn-primary btn-round">Refresh Leaderboard</button>
+                  <button type="submit" id="refreshButton" name="refreshPage" class="btn btn-primary btn-round">Refresh</button>
                 </form>
-                <button type="submit" name="refreshLeaderboard" data-toggle="modal" data-target="#addGamer" class="btn btn-primary btn-round">Gamer hinzufügen</button>
+                <button type="submit" data-toggle="modal" data-target="#addGamer" class="btn btn-primary btn-round">Gamer hinzufügen</button>
                 </div>
                 </div>
                 <div class="col-md-6">
@@ -165,7 +172,7 @@ session_start();
                   <div class="row">
                   <div class="col-md-6">
                   <h3>Match History</h3>
-                  <div class="table-responsive">
+                  <div class="table-wrapper-scroll-y my-custom-scrollbar">
                   <table class="table">
                     <thead>
                       <tr>
@@ -191,7 +198,6 @@ session_start();
                     }
                    echo '</tbody>
                   </table><form class="form" method="post" action="userSystem/leaderboardSys.php">
-                  <button type="submit" name="refreshMatchhistory" class="btn btn-primary btn-round">Refresh History</button>
                 </form>
                 </div>
                 </div>
@@ -329,6 +335,7 @@ session_start();
               <input name="newGamer" type="text" class="form-control" placeholder="Name">
               <div class="card-footer justify-content-center">
               <button type="submit" name="addGamer" class="btn btn-primary btn-round">Gamer hinzufügen</button>
+              <button type="button" class="btn btn-primary btn-round" data-dismiss="modal">Zurück</button>
               </div>
             </form>
           </div>

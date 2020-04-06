@@ -45,7 +45,8 @@ function getAllUser() {
     $allUsers = array();
 
     for ($row = 2; $row <= $lastRow; $row++) {
-        $user = array("username"=>$worksheet->getCell('A'.$row)->getValue(), "elo"=>$worksheet->getCell('B'.$row)->getValue(), "placement"=>$worksheet->getCell('C'.$row)->getValue());
+        $user = array("username"=>$worksheet->getCell('A'.$row)->getValue(), "elo"=>$worksheet->getCell('B'.$row)->getValue(), "placement"=>$worksheet->getCell('C'.$row)->getValue(),
+        "wins"=>$worksheet->getCell('D'.$row)->getValue(),"losses"=>$worksheet->getCell('E'.$row)->getValue() );
         $uniqid = uniqid();
         $allUsers[$uniqid] = $user;
     }

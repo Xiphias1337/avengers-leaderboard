@@ -1906,6 +1906,16 @@ pre code {
   background-color: transparent;
 }
 
+.my-custom-scrollbar {
+  position: relative;
+  height: 500px;
+  overflow: auto;
+  }
+
+.table-wrapper-scroll-y {
+  display: block;
+  }
+
 .table th,
 .table td {
   padding: 0.75rem;
