@@ -83,7 +83,7 @@ function getMatchHistory() {
     return array_reverse($matchHistory);
 }
 
-if (isset($_POST['addGamer']) && $_POST['addGamer'] != "") {
+if (isset($_POST['addGamer'])) {
     $loginDataFile = 'leaderboard.xlsx';
     $excelReader = PHPExcel_IOFactory::createReaderForFile($loginDataFile);
     $excelObj = $excelReader->load($loginDataFile);
